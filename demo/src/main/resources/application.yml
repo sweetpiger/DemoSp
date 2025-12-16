@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: demo
+  # Redis 配置
+  redis:
+    host: localhost       # Redis 服务器地址
+    port: 6379            # Redis 端口，默认为6379
+    password: ""          # Redis 密码，如果没有设置密码则留空
+    database: 0           # 使用的 Redis 数据库索引，默认为0
+    timeout: 2000ms       # 连接超时时间
+    # Redis 连接池配置（使用Lettuce）
+    lettuce:
+      pool:
+        max-active: 8       # 连接池最大连接数
+        max-idle: 8         # 连接池最大空闲连接
+        min-idle: 2         # 连接池最小空闲连接
+        max-wait: 10000ms   # 连接池最大等待时间
+      shutdown-timeout: 100ms  # 关闭连接超时时间
