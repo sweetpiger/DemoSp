@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>骰子大作战</title>
+  <style>
+    body {
+      font-family: '微软雅黑', Arial, sans-serif;
+      background: linear-gradient(45deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+      font-size: 2.5em;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .players-container {
+      display: flex;
+      justify-content: space-around;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+    .player-section {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      min-width: 250px;
+      flex: 1;
+    }
+    .player-title {
+      font-size: 1.3em;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    .gender-selector {
+      margin: 10px 0;
+    }
+    .gender-option {
+      display: inline-block;
+      margin: 0 10px;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 1em;
+      text-align: center;
+    }
+    .dice-container {
+      display: flex;
+      justify-content: space-around;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+    .dice-player {
+      text-align: center;
+      margin: 10px;
+    }
+    .dice {
+      width: 100px;
+      height: 100px;
+      background: white;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      margin: 10px auto;
+      transition: transform 0.5s ease;
+      position: relative;
+    }
+    .dot {
+      width: 18px;
+      height: 18px;
+      background-color: #333;
+      border-radius: 50%;
+      position: absolute;
+    }
+    .rolling {
+      animation: roll 0.5s ease infinite;
+    }
+    @keyframes roll {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .roll-btn {
+      background: linear-gradient(45deg, #ff6b6b, #ffa502);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 30px;
+      font-size: 1.2em;
+      cursor: pointer;
+      margin: 20px 0;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease;
+    }
+    .roll-btn:hover {
+      transform: scale(1.05);
+    }
+    .roll-btn:active {
+      transform: scale(0.95);
+    }
+    .clear-btn {
+      background: #f44336;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 1em;
+      cursor: pointer;
+      margin: 10px;
+      transition: background 0.3s ease;
+    }
+    .clear-btn:hover {
+      background: #d32f2f;
+    }
+    .result-container {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 500px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .winner {
+      color: #4CAF50;
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+    .loser {
+      color: #f44336;
+    }
+    .draw {
+      color: #2196F3;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      background: rgba(255, 255, 255, 0.8);
+      padding: 10px 20px;
+      border-radius: 10px;
+      margin: 5px;
+    }
+    .home-btn {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 1em;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s ease;
+    }
+    .home-btn:hover {
+      background: #45a049;
+    }
+    /* 骰子点数布局 - 调整了点的间距 */
+    .dice-1 .dot:nth-child(1) { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .dice-2 .dot:nth-child(1) { top: 20%; left: 20%; }
+    .dice-2 .dot:nth-child(2) { bottom: 20%; right: 20%; }
+    .dice-3 .dot:nth-child(1) { top: 20%; left: 20%; }
+    .dice-3 .dot:nth-child(2) { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .dice-3 .dot:nth-child(3) { bottom: 20%; right: 20%; }
+    .dice-4 .dot:nth-child(1) { top: 20%; left: 20%; }
+    .dice-4 .dot:nth-child(2) { top: 20%; right: 20%; }
+    .dice-4 .dot:nth-child(3) { bottom: 20%; left: 20%; }
+    .dice-4 .dot:nth-child(4) { bottom: 20%; right: 20%; }
+    .dice-5 .dot:nth-child(1) { top: 20%; left: 20%; }
+    .dice-5 .dot:nth-child(2) { top: 20%; right: 20%; }
+    .dice-5 .dot:nth-child(3) { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .dice-5 .dot:nth-child(4) { bottom: 20%; left: 20%; }
+    .dice-5 .dot:nth-child(5) { bottom: 20%; right: 20%; }
+    .dice-6 .dot:nth-child(1) { top: 20%; left: 20%; }
+    .dice-6 .dot:nth-child(2) { top: 20%; right: 20%; }
+    .dice-6 .dot:nth-child(3) { top: 50%; left: 20%; transform: translateY(-50%); }
+    .dice-6 .dot:nth-child(4) { top: 50%; right: 20%; transform: translateY(-50%); }
+    .dice-6 .dot:nth-child(5) { bottom: 20%; left: 20%; }
+    .dice-6 .dot:nth-child(6) { bottom: 20%; right: 20%; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🎲 骰子大作战 🎲</h1>
+
+  <div class="players-container">
+    <div class="player-section">
+      <div class="player-title">玩家朋友 1</div>
+      <div class="gender-selector">
+        <div class="gender-option">
+          <input type="radio" id="male1" name="gender1" value="male" checked>
+          <label for="male1">👦 男生</label>
+        </div>
+        <div class="gender-option">
+          <input type="radio" id="female1" name="gender1" value="female">
+          <label for="female1">👧 女生</label>
+        </div>
+      </div>
+      <input type="text" id="name1" placeholder="请输入姓名" value="玩家1">
+    </div>
+
+    <div class="player-section">
+      <div class="player-title">玩家朋友 2</div>
+      <div class="gender-selector">
+        <div class="gender-option">
+          <input type="radio" id="male2" name="gender2" value="male" checked>
+          <label for="male2">👦 男生</label>
+        </div>
+        <div class="gender-option">
+          <input type="radio" id="female2" name="gender2" value="female">
+          <label for="female2">👧 女生</label>
+        </div>
+      </div>
+      <input type="text" id="name2" placeholder="请输入姓名" value="玩家2">
+    </div>
+  </div>
+
+  <button class="roll-btn" onclick="rollDice()">🎲 掷骰子 🎲</button>
+  <button class="clear-btn" onclick="clearGameRecords()">🗑️ 清空记录</button>
+
+  <div class="dice-container">
+    <div class="dice-player">
+      <div id="player1Name">玩家1</div>
+      <div class="dice" id="dice1"></div>
+    </div>
+    <div class="dice-player">
+      <div id="player2Name">玩家2</div>
+      <div class="dice" id="dice2"></div>
+    </div>
+  </div>
+
+  <div class="result-container" id="resultContainer" style="display: none;">
+    <div id="resultText"></div>
+    <div class="stats">
+      <div class="stat-item">总局数: <span id="totalGames">0</span></div>
+      <div class="stat-item"><span id="player1NameStat">玩家1</span>: <span id="player1Wins">0</span> 胜</div>
+      <div class="stat-item"><span id="player2NameStat">玩家2</span>: <span id="player2Wins">0</span> 胜</div>
+      <div class="stat-item">平局: <span id="draws">0</span> 次</div>
+    </div>
+  </div>
+
+  <button class="home-btn" onclick="window.location.href='index.html'">🏠 返回主页</button>
+</div>
+
+<script>
+  // 游戏统计数据
+  let gameStats = {
+    totalGames: 0,
+    player1Wins: 0,
+    player2Wins: 0,
+    draws: 0
+  };
+
+  // 更新玩家名称显示
+  function updatePlayerNames() {
+    const name1 = document.getElementById('name1').value || '玩家1';
+    const name2 = document.getElementById('name2').value || '玩家2';
+
+    document.getElementById('player1Name').textContent = name1;
+    document.getElementById('player2Name').textContent = name2;
+    document.getElementById('player1NameStat').textContent = name1;
+    document.getElementById('player2NameStat').textContent = name2;
+  }
+
+  // 监听姓名输入变化
+  document.getElementById('name1').addEventListener('input', updatePlayerNames);
+  document.getElementById('name2').addEventListener('input', updatePlayerNames);
+
+  // 掷骰子函数
+  function rollDice() {
+    // 获取玩家信息
+    const player1Name = document.getElementById('name1').value || '玩家1';
+    const player2Name = document.getElementById('name2').value || '玩家2';
+
+    // 显示滚动动画
+    const dice1 = document.getElementById('dice1');
+    const dice2 = document.getElementById('dice2');
+    dice1.innerHTML = '';
+    dice2.innerHTML = '';
+    dice1.classList.add('rolling');
+    dice2.classList.add('rolling');
+
+    // 隐藏结果容器
+    document.getElementById('resultContainer').style.display = 'none';
+
+    // 模拟掷骰子延迟
+    setTimeout(() => {
+      // 停止滚动动画
+      dice1.classList.remove('rolling');
+      dice2.classList.remove('rolling');
+
+      // 生成随机骰子数
+      const dice1Value = Math.floor(Math.random() * 6) + 1;
+      const dice2Value = Math.floor(Math.random() * 6) + 1;
+
+      // 显示骰子点数
+      showDiceDots(dice1, dice1Value);
+      showDiceDots(dice2, dice2Value);
+
+      // 更新统计数据
+      updateStats(dice1Value, dice2Value, player1Name, player2Name);
+    }, 1000);
+  }
+
+  // 显示骰子点数
+  function showDiceDots(diceElement, value) {
+    diceElement.className = 'dice'; // 清除之前的类
+    diceElement.classList.add(`dice-${value}`);
+
+    // 添加对应数量的点
+    for (let i = 0; i < value; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      diceElement.appendChild(dot);
+    }
+  }
+
+  // 更新统计数据
+  function updateStats(dice1Value, dice2Value, player1Name, player2Name) {
+    // 增加总局数
+    gameStats.totalGames++;
+
+    // 判断胜负
+    let winner = '';
+    if (dice1Value > dice2Value) {
+      gameStats.player1Wins++;
+      winner = 'player1';
+    } else if (dice2Value > dice1Value) {
+      gameStats.player2Wins++;
+      winner = 'player2';
+    } else {
+      gameStats.draws++;
+      winner = 'draw';
+    }
+
+    // 显示结果
+    displayResult(winner, player1Name, player2Name);
+  }
+
+  // 显示结果
+  function displayResult(winner, player1Name, player2Name) {
+    const resultContainer = document.getElementById('resultContainer');
+    const resultText = document.getElementById('resultText');
+
+    // 更新统计信息显示
+    document.getElementById('totalGames').textContent = gameStats.totalGames;
+    document.getElementById('player1Wins').textContent = gameStats.player1Wins;
+    document.getElementById('player2Wins').textContent = gameStats.player2Wins;
+    document.getElementById('draws').textContent = gameStats.draws;
+
+    // 显示胜负结果
+    if (winner === 'player1') {
+      resultText.innerHTML = `
+        <div class="winner">${player1Name} 获胜！🎉</div>
+        <div class="loser">${player2Name} 输了 😢</div>
+      `;
+    } else if (winner === 'player2') {
+      resultText.innerHTML = `
+        <div class="winner">${player2Name} 获胜！🎉</div>
+        <div class="loser">${player1Name} 输了 😢</div>
+      `;
+    } else {
+      resultText.innerHTML = `
+        <div class="draw">平局！🤝</div>
+      `;
+    }
+
+    resultContainer.style.display = 'block';
+  }
+
+  // 清空游戏记录
+  function clearGameRecords() {
+    gameStats = {
+      totalGames: 0,
+      player1Wins: 0,
+      player2Wins: 0,
+      draws: 0
+    };
+
+    // 更新显示
+    document.getElementById('totalGames').textContent = '0';
+    document.getElementById('player1Wins').textContent = '0';
+    document.getElementById('player2Wins').textContent = '0';
+    document.getElementById('draws').textContent = '0';
+
+    // 隐藏结果容器
+    document.getElementById('resultContainer').style.display = 'none';
+
+    alert('游戏记录已清空！');
+  }
+
+  // 初始化玩家名称
+  updatePlayerNames();
+</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>趣味小工具箱</title>
+    <style>
+        body {
+            font-family: '微软雅黑', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .tool-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .tool-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .tool-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .tool-description {
+            color: #666;
+            line-height: 1.6;
+        }
+        .bmi-icon {
+            color: #4CAF50;
+        }
+        .dice-icon {
+            color: #FF9800;
+        }
+        .rps-icon {
+            color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🎲 趣味小工具箱 🎯</h1>
+    <div class="tool-grid">
+        <div class="tool-card" onclick="window.location.href='bmi-calculator.html'">
+            <div class="tool-icon bmi-icon">⚖️</div>
+            <div class="tool-title">BMI计算器</div>
+            <div class="tool-description">计算您的身体质量指数，了解健康状况和理想体重范围</div>
+        </div>
+        <div class="tool-card" onclick="window.location.href='dice-game.html'">
+            <div class="tool-icon dice-icon">🎲</div>
+            <div class="tool-title">骰子大作战</div>
+            <div class="tool-description">两人对战掷骰子游戏，看看谁的运气更好！</div>
+        </div>
+        <div class="tool-card" onclick="window.location.href='rock-paper-scissors.html'">
+            <div class="tool-icon rps-icon">✊</div>
+            <div class="tool-title">猜拳游戏</div>
+            <div class="tool-description">经典的石头剪刀布游戏，看谁更厉害！</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
